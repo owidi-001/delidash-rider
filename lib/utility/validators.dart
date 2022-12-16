@@ -13,18 +13,43 @@ String? validEmail(String email) {
   return message;
 }
 
-// Email validator
-// (value) {
-//    if (value!.isEmpty) {
-//      return "Email field required!";
-//    }
-//    if (!RegExp(
-//            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-//        .hasMatch(value)) {
-//      return "Enter a valid email address";
-//    }
-//    return null;
-// }
+String? validName(String name) {
+  String? message;
+
+  // Null or empty name is invalid
+  if (name.isEmpty) {
+    message = "Your name is required";
+  } 
+  
+  return message;
+}
+
+
+String? validNationalId(String id) {
+  String? message;
+
+  const pattern = r"^.{8}$";
+  final regExp = RegExp(pattern);
+
+  // Null or empty id is invalid
+  if (id.isEmpty) {
+    message = "National ID required!";
+  } else if (!regExp.hasMatch(id)) {
+    message = "Enter valid ID";
+  }
+  return message;
+}
+
+String? validLicense(String license) {
+  String? message;
+
+
+  // Null or empty id is invalid
+  if (license.isEmpty) {
+    message = "This field cannot be empty";
+  } 
+  return message;
+}
 
 String? validPhone(String phone) {
   String? message;

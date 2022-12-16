@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rider/domain/rider_order.dart';
+import 'package:rider/providers/order.provider.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/services/app.service.dart';
 import 'package:rider/theme/app_theme.dart';
@@ -17,6 +19,9 @@ class OrderDetail extends StatefulWidget {
 class _OrderDetailState extends State<OrderDetail> {
   @override
   Widget build(BuildContext context) {
+    final orderProvider = Provider.of<OrderProvider>(context);
+    Location location = orderProvider.getItemLocation(widget.order);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,12 +36,9 @@ class _OrderDetailState extends State<OrderDetail> {
           onTap: () => Navigator.pop(context),
           child: const Padding(
             padding: EdgeInsets.only(left: 8.0),
-            child: CircleAvatar(
-              backgroundColor: AppTheme.gradientColor,
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.primaryColor,
-              ),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: AppTheme.primaryColor,
             ),
           ),
         ),
@@ -91,9 +93,9 @@ class _OrderDetailState extends State<OrderDetail> {
                             Text(
                               "Order Info",
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.normal,
-                                  color: AppTheme.secondaryColor),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.darkColor),
                             )
                           ],
                         ),
@@ -160,9 +162,9 @@ class _OrderDetailState extends State<OrderDetail> {
                             Text(
                               "Delivery Info",
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.normal,
-                                  color: AppTheme.secondaryColor),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.darkColor),
                             )
                           ],
                         ),
@@ -170,20 +172,26 @@ class _OrderDetailState extends State<OrderDetail> {
                           height: 16,
                         ),
                         Row(
-                          children: const [
-                            Text(
-                              "Placemark         : ",
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Placemark: ",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
                                   color: AppTheme.secondaryColor),
                             ),
-                            Text(
-                              "Egerton University",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.darkColor),
+                            SizedBox(
+                              width: 200,
+                              child: Text(
+                                location.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.darkColor),
+                              ),
                             ),
                           ],
                         ),
@@ -191,8 +199,9 @@ class _OrderDetailState extends State<OrderDetail> {
                           height: 8,
                         ),
                         Row(
-                          children: const [
-                            Text(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
                               "Building Name: ",
                               style: TextStyle(
                                   fontSize: 14,
@@ -200,8 +209,8 @@ class _OrderDetailState extends State<OrderDetail> {
                                   color: AppTheme.secondaryColor),
                             ),
                             Text(
-                              "Science Complex",
-                              style: TextStyle(
+                              location.block_name,
+                              style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.darkColor),
@@ -212,11 +221,14 @@ class _OrderDetailState extends State<OrderDetail> {
                           height: 8,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Row(
-                                children: const [
-                                  Text(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
                                     "Floor: ",
                                     style: TextStyle(
                                         fontSize: 14,
@@ -224,8 +236,8 @@ class _OrderDetailState extends State<OrderDetail> {
                                         color: AppTheme.secondaryColor),
                                   ),
                                   Text(
-                                    "2",
-                                    style: TextStyle(
+                                    location.floor_number,
+                                    style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.darkColor),
@@ -233,19 +245,25 @@ class _OrderDetailState extends State<OrderDetail> {
                                 ],
                               ),
                             ),
+                            const Expanded(
+                                child: SizedBox(
+                              width: 16.0,
+                            )),
                             Expanded(
                               child: Row(
-                                children: const [
-                                  Text(
-                                    "Floor: ",
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Room: ",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.normal,
                                         color: AppTheme.secondaryColor),
                                   ),
                                   Text(
-                                    "14C",
-                                    style: TextStyle(
+                                    location.room_number,
+                                    style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.darkColor),
@@ -281,13 +299,31 @@ class _OrderDetailState extends State<OrderDetail> {
                         // width: MediaQuery.of(context).size.width * 0.4,
                         child: ElevatedButton(
                           onPressed: () {
-                            // check if item in cart
+                            // Confirm order delivery
+                            final Future response = AppService()
+                                .confirmDelivery({
+                              "order": widget.order.id,
+                              "status": "Completed"
+                            });
 
-                            AppService().confirmDelivery(data: {"order": widget.order.id, "status": "Fulfilled"});
+                            response.then((value) {
+                              if (value['status']) {
+                                // Update order
+                                orderProvider.updateOrder(widget.order);
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                showMessage(true, "Delivery confirmed!"));
-                            Navigator.pop(context);
+                                // // Show confirmation message
+                                // ScaffoldMessenger.of(context).showSnackBar(
+                                //     showMessage(true, value["message"]));
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    showMessage(true, "Delivery confirmed!"));
+
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    showMessage(false, value["message"]));
+                              }
+                            });
                           },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:rider/constants/status.dart';
 import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/providers/order.provider.dart';
+import 'package:rider/providers/rider.provider.dart';
+import 'package:rider/routes/app_router.dart';
 import 'package:rider/theme/app_theme.dart';
 import 'package:rider/utility/greetings.utility.dart';
 import 'package:rider/widgets/order_card.dart';
@@ -17,32 +19,32 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-
   @override
   Widget build(BuildContext context) {
     var greetings = greetingMessage();
 
     // Load user
     var user = context.watch<AuthenticationProvider>().user;
+    var rider = context.watch<RiderProvider>().rider;
 
     var orders = Provider.of<OrderProvider>(context);
 
-
-    return CustomScrollView(
-      slivers: <Widget>[
-        const SliverToBoxAdapter(
-          child: SizedBox(
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future.delayed(const Duration(seconds: 1), () {
+          orders.refresh();
+        });
+      },
+      child: SingleChildScrollView(
+        child: Column(children: [
+          const SizedBox(
             height: 28,
           ),
-        ),
 
-        // Appbar
-        SliverAppBar(
-            pinned: false,
-            snap: true,
-            floating: true,
-            backgroundColor: AppTheme.whiteColor,
-            flexibleSpace: Padding(
+          // Appbar
+          Container(
+            color: AppTheme.whiteColor,
+            child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
               child: Row(
@@ -53,16 +55,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     flex: 1,
                     child: InkWell(
                       onTap: () =>
-                          {
-                            // Navigator.pushNamed(context, AppRoute.profile)
-                            },
+                          {Navigator.pushNamed(context, AppRoute.profile)},
                       child: Image.asset(
                         "assets/images/user.png",
                         scale: 3.6,
                       ),
                     ),
                   ),
-
                   Expanded(
                       flex: 2,
                       child: Container(
@@ -82,9 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               height: 4,
                             ),
                             Text(
-                              user.firstName.isEmpty
-                                  ? user.email.split("@")[0]
-                                  : user.firstName,
+                              rider.brand,
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -94,56 +91,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       )),
                   Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: (() =>
-                            {
-                              // Navigator.pushNamed(context, AppRoute.location)
-                              }),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: const BoxDecoration(
-                              color: AppTheme.lightColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              const Icon(
-                                CupertinoIcons.time,
-                                color: AppTheme.primaryColor,
-                                size: 16,
-                              ),
-                              Text(
-                                // "History",
-                                "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                                softWrap: false,
-                                overflow: TextOverflow.clip,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const Icon(
-                                CupertinoIcons.chevron_down,
-                                color: AppTheme.primaryColor,
-                                size: 12,
-                              )
-                            ],
-                          ),
+                    flex: 2,
+                    child: InkWell(
+                      onTap: (() => {
+                            // Navigator.pushNamed(context, AppRoute.location)
+                          }),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: const BoxDecoration(
+                            color: AppTheme.lightColor,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            const Icon(
+                              CupertinoIcons.time,
+                              color: AppTheme.primaryColor,
+                              size: 16,
+                            ),
+                            Text(
+                              // "History",
+                              "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                              softWrap: false,
+                              overflow: TextOverflow.clip,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const Icon(
+                              CupertinoIcons.chevron_down,
+                              color: AppTheme.primaryColor,
+                              size: 12,
+                            )
+                          ],
                         ),
-                      ))
+                      ),
+                    ),
+                  ),
+                  // Code later after presentations
+                  // const NotificationIcon(),
                 ],
               ),
-            )),
+            ),
+          ),
 
-        
-        // Rider order list
-        SliverPadding(
-          padding: const EdgeInsets.all(16.0),
-          sliver: SliverToBoxAdapter(
+          // Rider order list
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -164,46 +162,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
           ),
-        ),
 
-
-        orders.status == ServiceStatus.loadingSuccess
-            ? orders.data().isNotEmpty
-                ? SliverList(
-                    delegate: SliverChildBuilderDelegate(((
-                      context,
-                      index,
-                    ) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: OrderCard(
-                          order: orders.data()[index],
-                        ),
-                      );
-                    }), childCount: orders.data().length),
-                  )
-                : const SliverPadding(
-                    padding: EdgeInsets.all(16.0),
-                    sliver: SliverToBoxAdapter(
+          orders.status == ServiceStatus.loadingSuccess
+              ? orders.data().isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: ((
+                        context,
+                        index,
+                      ) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: OrderCard(
+                            order: orders.data()[index],
+                          ),
+                        );
+                      }),
+                      itemCount: orders.data().length)
+                  : const Padding(
+                      padding: EdgeInsets.all(16.0),
                       child: Text(
                         "No order available yet",
                         style: TextStyle(
                             color: AppTheme.secondaryColor, fontSize: 18),
                       ),
-                    ),
-                  )
-            : SliverList(
-                delegate: SliverChildBuilderDelegate(((
-                  context,
-                  index,
-                ) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: OrderCardSkeleton(),
-                  );
-                }), childCount: 6),
-              )
-      ],
+                    )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemBuilder: ((
+                    context,
+                    index,
+                  ) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: OrderCardSkeleton(),
+                    );
+                  }),
+                  itemCount: 6,
+                ),
+        ]),
+      ),
     );
   }
 }

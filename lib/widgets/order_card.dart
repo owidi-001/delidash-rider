@@ -3,6 +3,8 @@ import 'package:rider/domain/rider_order.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/screens/dashboard/pages/order_detail.dart';
 import 'package:rider/theme/app_theme.dart';
+import 'package:rider/utility/date_converter.dart';
+import 'package:rider/utility/time_converter.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderItem order;
@@ -10,11 +12,18 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, Color> statusColor = {
+      "Completed": AppTheme.primaryColor,
+      "Cancelled": AppTheme.redColor,
+      "Pending": Colors.yellow.shade700,
+      "On Transit": AppTheme.darkColor
+    };
+
     return InkWell(
       onTap: (() => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: ((context) => OrderDetail(order:order)),
+              builder: ((context) => OrderDetail(order: order)),
             ),
           )),
       child: Container(
@@ -55,11 +64,63 @@ class OrderCard extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  Text(order.product.description,
-                      style: const TextStyle(
-                          color: AppTheme.darkColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                  // Text(order.product.description,
+                  //     style: const TextStyle(
+                  //         color: AppTheme.darkColor,
+                  //         fontSize: 14,
+                  //         fontWeight: FontWeight.bold)),
+
+                  Row(
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 2.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: statusColor[order.status]!,
+                          ),
+                          child: Text(
+                            order.status,
+                            style: const TextStyle(color: AppTheme.lightColor),
+                          ))
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Quantity:"),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Text(
+                            "${order.quantity}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            convertDate(order.date),
+                            style: const TextStyle(
+                                color: AppTheme.secondaryColor, fontSize: 14),
+                          ),
+                          Text(
+                            convertTime(order.time),
+                            style: const TextStyle(
+                                color: AppTheme.secondaryColor, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

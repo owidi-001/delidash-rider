@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/domain/auth.model.dart';
 import 'package:rider/providers/auth.provider.dart';
+import 'package:rider/providers/rider.provider.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/utility/shared_preference.dart';
 
@@ -43,17 +44,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> initializeApp() async {
     LoginData? data = await UserPreferences().loadUserData();
+    RiderLogin? data2 = await UserPreferences().loadRiderData();
 
     if (!mounted) {
       return;
     }
-    if (data == null) {
+    if (data == null || data2 == null) {
       // Go to welcome screen
       Navigator.pushReplacementNamed(context, AppRoute.welcome);
     } else {
       context.read<AuthenticationProvider>().loginUser(
             user: data.user,
             authToken: data.authToken,
+          );
+
+      context.read<RiderProvider>().loginRider(
+            rider: data2.rider
           );
 
       Navigator.pushReplacementNamed(context, AppRoute.home);

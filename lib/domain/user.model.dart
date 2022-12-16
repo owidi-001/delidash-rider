@@ -69,3 +69,4 @@ class User extends Equatable {
       phoneNumber: "anonymous",
       token: "anonymous");
 }
+

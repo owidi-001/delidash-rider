@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/providers/order.provider.dart';
+import 'package:rider/providers/rider.provider.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/screens/auth/login_screen.dart';
 import 'package:rider/screens/auth/registration_screen.dart';
+import 'package:rider/screens/auth/rider_details.dart';
 import 'package:rider/screens/auth/splash.dart';
 import 'package:rider/screens/auth/welcome.dart';
 import 'package:rider/screens/dashboard/dashboard.dart';
@@ -28,6 +30,9 @@ class _MealioState extends State<Mealio> {
         ChangeNotifierProvider(
           create: (_) => AuthenticationProvider.instance,
         ),
+        ChangeNotifierProvider(
+          create: (_) => RiderProvider.instance,
+        ),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         
       ],
@@ -39,6 +44,7 @@ class _MealioState extends State<Mealio> {
           AppRoute.splash: (context) => const SplashScreen(),
           AppRoute.welcome: (context) => const WelcomeScreen(),
           AppRoute.register: (context) => RegistrationScreen(),
+          AppRoute.rider_info: (context) => RiderDetailsScreen(),
           AppRoute.login: (context) => LoginScreen(),
           AppRoute.home: (context) => const Home(),
           AppRoute.dashboard: ((context) => const DashboardScreen()),

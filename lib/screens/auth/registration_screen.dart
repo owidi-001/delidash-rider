@@ -113,7 +113,7 @@ class RegistrationScreen extends StatelessWidget {
           // Update provider to read user
           authProvider.loginUser(user: data, authToken: data.token);
 
-          Navigator.pushReplacementNamed(context, AppRoute.home);
+          Navigator.pushReplacementNamed(context, AppRoute.rider_info);
         });
       } else {
         ScaffoldMessenger.of(context)

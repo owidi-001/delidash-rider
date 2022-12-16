@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:rider/constants/status.dart';
 import 'package:rider/domain/auth.model.dart';
-import 'package:rider/domain/rider.dart';
+import 'package:rider/domain/user.model.dart';
 import 'package:rider/utility/shared_preference.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

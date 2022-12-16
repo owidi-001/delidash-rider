@@ -1,6 +1,6 @@
 
 import 'package:rider/domain/exception.dart';
-import 'package:rider/domain/rider.dart';
+import 'package:rider/domain/user.model.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/services/http_client.dart';
 
@@ -28,4 +28,6 @@ class UserService {
         data: data,
         der: (data) => User.fromJson(data),
       );
+
+    
 }

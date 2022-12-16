@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/providers/order.provider.dart';
+import 'package:rider/providers/rider.provider.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:rider/screens/auth/login_screen.dart';
 import 'package:rider/theme/app_theme.dart';
@@ -18,6 +19,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     var user = context.watch<AuthenticationProvider>().user;
+    var rider = context.watch<RiderProvider>().rider;
     var orderProvider = Provider.of<OrderProvider>(context);
 
     var orders = orderProvider.dataCompleted();
@@ -46,10 +48,10 @@ class _ProfileState extends State<Profile> {
             child: const Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: CircleAvatar(
-                backgroundColor: AppTheme.gradientColor,
+                backgroundColor: AppTheme.whiteColor,
                 child: Icon(
                   Icons.logout_outlined,
-                  color: AppTheme.secondaryColor,
+                  color: AppTheme.primaryColor,
                 ),
               ),
             ),
@@ -90,9 +92,7 @@ class _ProfileState extends State<Profile> {
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
-                          user.firstName.isEmpty
-                              ? "Anonymous"
-                              : "${user.firstName} ${user.lastName}",
+                           rider.brand,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),

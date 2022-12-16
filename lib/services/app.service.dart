@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:rider/domain/rider_order.dart';
 import 'package:rider/routes/app_router.dart';
 import 'package:http/http.dart';
@@ -29,20 +28,13 @@ class AppService {
 
       orders =
           parsed.map<RiderOrder>((json) => RiderOrder.fromJson(json)).toList();
-    } else {
-      if (kDebugMode) {
-        print(response.body);
-        print(response.statusCode);
-      }
-    }
+    } else {}
     return orders;
   }
 
   Future<Map<String, dynamic>> confirmDelivery(
       Map<String, dynamic> payload) async {
     Map<String, dynamic> result;
-
-    print(jsonEncode(payload));
 
     String token = await UserPreferences().getToken();
 
@@ -53,7 +45,6 @@ class AppService {
       encoding: Encoding.getByName("utf-8"),
     );
 
-    print(response.body);
     if (response.statusCode == 202) {
       result = {'status': true, 'message': 'Order delivery confirmed'};
     } else {

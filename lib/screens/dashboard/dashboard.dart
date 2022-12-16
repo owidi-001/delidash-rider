@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/constants/status.dart';
-import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/providers/order.provider.dart';
 import 'package:rider/providers/rider.provider.dart';
 import 'package:rider/routes/app_router.dart';
@@ -24,7 +23,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     var greetings = greetingMessage();
 
     // Load user
-    var user = context.watch<AuthenticationProvider>().user;
     var rider = context.watch<RiderProvider>().rider;
 
     var orders = Provider.of<OrderProvider>(context);

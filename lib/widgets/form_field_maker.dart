@@ -33,7 +33,8 @@ Material submitButton(String title, Function() function) {
 
 class ButtonLoading extends StatelessWidget {
   final String title;
-  const ButtonLoading({super.key,required this.title});
+  final Function function;
+  const ButtonLoading({super.key, required this.title, required this.function});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,9 @@ class ButtonLoading extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               ),
-              const CircularProgressIndicator(color: AppTheme.whiteColor,),
+              const CircularProgressIndicator(
+                color: AppTheme.whiteColor,
+              ),
             ],
           )),
     );

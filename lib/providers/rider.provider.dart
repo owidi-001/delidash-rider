@@ -2,16 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:rider/constants/status.dart';
 import 'package:rider/domain/auth.model.dart';
 import 'package:rider/domain/rider.model.dart';
+import 'package:rider/services/rider.service.dart';
 import 'package:rider/utility/shared_preference.dart';
 
 
 class RiderProvider with ChangeNotifier {
-  RiderProvider._();
-  static final instance = RiderProvider._();
-
   AuthenticationStatus status = AuthenticationStatus.unknown;
-  
   Rider rider = Rider.empty();
+
+  RiderProvider(){
+    AuthenticationStatus status = AuthenticationStatus.unknown;
+  }
 
   void authenticationChanged(AuthenticationStatus status) {
     this.status = status;

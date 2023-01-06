@@ -33,7 +33,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       autofocus: false,
       controller: _firstNameController,
       keyboardType: TextInputType.name,
-      // initialValue: user.firstName,
       onSaved: (value) {
         _firstNameController.value;
       },

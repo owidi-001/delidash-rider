@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rider/screens/dashboard/dashboard.dart';
 import 'package:rider/screens/profile/profile.dart';
 import 'package:rider/theme/app_theme.dart';
@@ -14,10 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardScreen(),
-    const Profile()
-  ];
+  final List<Widget> _screens = [const DashboardScreen(), const Profile()];
 
   void _updateIndex(int value) {
     setState(() {

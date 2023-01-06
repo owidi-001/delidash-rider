@@ -219,12 +219,11 @@ class RiderDetailsScreen extends StatelessWidget {
                   height: 32,
                 ),
                 riderProvider.status == AuthenticationStatus.authenticating
-                    ? const ButtonLoading(title: "Save")
+                    ? ButtonLoading(title: "Saving", function: () => {})
                     : submitButton("Save", () => saveDriver(context)),
                 const SizedBox(
                   height: 24,
                 ),
-                
               ],
             ),
           ),

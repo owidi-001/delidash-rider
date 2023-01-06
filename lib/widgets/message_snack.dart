@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider/theme/app_theme.dart';
 
-SnackBar showMessage(bool success, String message, {int timeout = 3}) {
+SnackBar showMessage(bool success, String message, {int timeout = 1}) {
   return SnackBar(
     content: Text(
       message,

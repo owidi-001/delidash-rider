@@ -1,19 +1,22 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:rider/domain/user.model.dart';
 
 Rider riderFromJson(String str) => Rider.fromJson(json.decode(str));
 String riderToJson(Rider data) => json.encode(data.toMap());
 
-// "brand","dob","national_id","license"
+
 class Rider extends Equatable {
+  final int id;
   final String brand;
   final String dob;
   final String national_id;
   final String license;
-  final int user;
+  final User user;
 
   const Rider({
+    required this.id,
     required this.brand,
     required this.dob,
     required this.national_id,
@@ -23,11 +26,12 @@ class Rider extends Equatable {
 
   factory Rider.fromJson(Map<String, dynamic> json) {
     return Rider(
+      id: json["id"],
       brand: json["brand"],
       dob: json["dob"],
       national_id: json["national_id"],
       license: json["license"],
-      user: json["user"],
+      user: User.fromJson(json["user"]),
     );
   }
 
@@ -63,11 +67,11 @@ class Rider extends Equatable {
     );
   }
 
-  factory Rider.empty() =>  const Rider(
+  factory Rider.empty() => Rider(
+      id: -1,
       brand: "Unknown",
       dob: "anonymous",
       license: "anonymous",
       national_id: "anonymous",
-      user: -1
-      );
+      user: User.empty());
 }

@@ -106,14 +106,16 @@ class RegistrationScreen extends StatelessWidget {
         res.when(error: (error) {
           ScaffoldMessenger.of(context)
               .showSnackBar(showMessage(false, error.message));
+          authProvider
+              .authenticationChanged(AuthenticationStatus.unAuthenticated);
         }, success: (data) {
           ScaffoldMessenger.of(context)
               .showSnackBar(showMessage(true, "Registration successful"));
 
           // Update provider to read user
-          authProvider.loginUser(user: data, authToken: data.token);
+          authProvider.loginUser(user: data);
 
-          Navigator.pushReplacementNamed(context, AppRoute.rider_info);
+          Navigator.pushReplacementNamed(context, AppRoute.home);
         });
       } else {
         ScaffoldMessenger.of(context)
@@ -133,7 +135,7 @@ class RegistrationScreen extends StatelessWidget {
             icon: const Icon(
               Icons.arrow_back,
               size: 24,
-              color: AppTheme.primaryColor,
+              color: AppTheme.secondaryColor,
             )),
       ),
       body: Center(
@@ -216,7 +218,10 @@ class RegistrationScreen extends StatelessWidget {
                     height: 32,
                   ),
                   authProvider.status == AuthenticationStatus.authenticating
-                      ? const ButtonLoading(title: "Register")
+                      ? ButtonLoading(
+                          title: "Register",
+                          function: () {},
+                        )
                       : submitButton("Register", () => doRegister(context)),
                   const SizedBox(
                     height: 24,
@@ -238,7 +243,7 @@ class RegistrationScreen extends StatelessWidget {
                         child: const Text(
                           "Sign in",
                           style: TextStyle(
-                              color: AppTheme.primaryColor,
+                              color: AppTheme.secondaryColor,
                               fontSize: 18,
                               fontWeight: FontWeight.normal),
                         ),

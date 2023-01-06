@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/constants/status.dart';
@@ -23,7 +24,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     var greetings = greetingMessage();
 
     // Load user
-    var rider = context.watch<RiderProvider>().rider;
+    // var rider = context.watch<RiderProvider>().rider;
+    var rider = RiderProvider.instance.rider;
+
+    if (kDebugMode) {
+      print(rider.brand);
+    }
 
     var orders = Provider.of<OrderProvider>(context);
 

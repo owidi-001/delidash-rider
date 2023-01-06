@@ -7,14 +7,6 @@ import 'package:http/http.dart';
 import 'package:rider/utility/shared_preference.dart';
 
 class AppService {
-  // Fetch order items
-  //  Future<HttpResult<OrderItem>> confirmDelivery({required Map<String, dynamic> data}) =>
-  //     HttpClient.put2<OrderItem>(
-  //       ApiUrl.ordersEdit,
-  //       data: data,
-  //       der: (data) => OrderItem.fromJson(data),
-  //     );
-
   Future<List<RiderOrder>> fetchOrderItems() async {
     List<RiderOrder> orders = [];
 

@@ -4,6 +4,7 @@ import 'package:rider/domain/auth.model.dart';
 import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/providers/rider.provider.dart';
 import 'package:rider/routes/app_router.dart';
+import 'package:rider/theme/app_theme.dart';
 import 'package:rider/utility/shared_preference.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,14 +29,22 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: const Color(0xff23AA49),
       body: Center(
-          child: CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: 48,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            "assets/images/app_logo.png",
-            scale: 4.0,
+          child: Container(
+        decoration: const BoxDecoration(
+            color: AppTheme.lightColor,
+            borderRadius: BorderRadius.all(Radius.circular(50))),
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 48,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              child: Image.asset(
+                "assets/images/app_logo.png",
+                scale: 4.0,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ),
       )),
@@ -55,12 +64,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       context.read<AuthenticationProvider>().loginUser(
             user: data.user,
-            authToken: data.authToken,
           );
 
-      context.read<RiderProvider>().loginRider(
-            rider: data2.rider
-          );
+      context.read<RiderProvider>().loginRider(rider: data2.rider);
 
       Navigator.pushReplacementNamed(context, AppRoute.home);
     }

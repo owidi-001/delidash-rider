@@ -33,7 +33,7 @@ class _ProfileState extends State<Profile> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,        
+        backgroundColor: Colors.white,
         actions: [
           InkWell(
             onTap: () => {
@@ -92,7 +92,7 @@ class _ProfileState extends State<Profile> {
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
-                           rider.brand,
+                          rider.brand,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
@@ -115,7 +115,7 @@ class _ProfileState extends State<Profile> {
                       const SizedBox(
                         height: 16,
                       ),
-                      user.firstName.isEmpty
+                      user.name.isEmpty
                           ? TextButton(
                               onPressed: () {
                                 Navigator.pushNamed(
@@ -140,7 +140,7 @@ class _ProfileState extends State<Profile> {
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                   "Orders Completed",
+                  "Orders Completed",
                   style: TextStyle(
                       color: AppTheme.secondaryColor,
                       fontSize: 18,

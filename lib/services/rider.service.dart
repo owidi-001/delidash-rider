@@ -1,4 +1,3 @@
-
 import 'package:rider/domain/exception.dart';
 import 'package:rider/domain/user.model.dart';
 import 'package:rider/domain/rider.model.dart';
@@ -6,8 +5,6 @@ import 'package:rider/routes/app_router.dart';
 import 'package:rider/services/http_client.dart';
 
 class RiderService {
-  
-
 // saveRider
   Future<HttpResult<Rider>> saveRider({required Map<String, String> data}) =>
       HttpClient.post2<Rider>(
@@ -23,6 +20,4 @@ class RiderService {
         data: data,
         der: (data) => User.fromJson(data),
       );
-
-    
 }

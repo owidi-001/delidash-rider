@@ -31,10 +31,9 @@ class _MealioState extends State<Mealio> {
           create: (_) => AuthenticationProvider.instance,
         ),
         ChangeNotifierProvider(
-          create: (_) => RiderProvider.instance,
+          create: (_) => RiderProvider(),
         ),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
-        
       ],
       child: MaterialApp(
         title: 'Meal-io',

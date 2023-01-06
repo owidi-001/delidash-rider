@@ -6,24 +6,21 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toMap());
 
 class User extends Equatable {
-  final String firstName;
-  final String lastName;
-  final String phoneNumber;
+  final String name;
   final String email;
-  final String token;
+  final String phoneNumber;
+  final String? token;
 
   const User({
-    required this.firstName,
-    required this.lastName,
-    required this.phoneNumber,
+    required this.name,
     required this.email,
-    required this.token,
+    required this.phoneNumber,
+    this.token,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      lastName: json["last_name"],
-      firstName: json["first_name"],
+      name: json["name"],
       phoneNumber: (json["phone_number"] as String).replaceAll("+254", "0"),
       email: json["email"],
       token: json["token"],
@@ -31,16 +28,14 @@ class User extends Equatable {
   }
 
   Map<String, dynamic> toJson(User user) => {
-        "last_name": user.lastName,
-        "first_name": user.firstName,
+        "name": user.name,
         "phone_number": user.phoneNumber,
         "email": user.email,
         "token": user.token
       };
 
   Map<String, dynamic> toMap() => {
-        "last_name": lastName,
-        "first_name": firstName,
+        "name": name,
         "phone_number": phoneNumber,
         "email": email,
         "token": token
@@ -48,8 +43,7 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [
-        firstName,
-        lastName,
+        name,
         email,
         phoneNumber,
         token,
@@ -63,10 +57,8 @@ class User extends Equatable {
   }
 
   factory User.empty() => const User(
-      firstName: "anonymous",
-      lastName: "anonymous",
+      name: "anonymous",
       email: "anonymous",
       phoneNumber: "anonymous",
       token: "anonymous");
 }
-

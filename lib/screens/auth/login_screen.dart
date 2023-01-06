@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rider/constants/status.dart';
 import 'package:rider/providers/auth.provider.dart';
 import 'package:rider/routes/app_router.dart';
+import 'package:rider/screens/auth/registration_screen.dart';
 import 'package:rider/services/user.service.dart';
 import 'package:rider/theme/app_theme.dart';
 import 'package:rider/utility/validators.dart';
@@ -23,7 +25,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthenticationProvider>(context);
-
+    authProvider.status == AuthenticationStatus.unknown;
     // email field
     final emailField = TextFormField(
       autofocus: false,
@@ -50,6 +52,51 @@ class LoginScreen extends StatelessWidget {
       textInputAction: TextInputAction.done,
       decoration: buildInputDecoration("Password", Icons.lock),
     );
+
+    void login(BuildContext context) async {
+      final form = _formkey.currentState;
+
+      if (form!.validate()) {
+        form.save();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(showMessage(true, "Please wait authenticating ..."));
+
+        // Update authentication status
+        AuthenticationProvider.instance
+            .authenticationChanged(AuthenticationStatus.authenticating);
+
+        final res = await UserService().login(data: {
+          "email": _emailController.text,
+          "password": _passwordController.text
+        });
+        res.when(
+          error: (error) {
+            // if (kDebugMode) {
+            //   print("An error occured");
+            //   print(error.message);
+            // }
+            ScaffoldMessenger.of(context).showSnackBar(
+              showMessage(false, "Incorrect email or password!"),
+            );
+            authProvider
+                .authenticationChanged(AuthenticationStatus.unAuthenticated);
+          },
+          success: (data) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              showMessage(true, "Login Success"),
+            );
+
+            AuthenticationProvider.instance.loginUser(user: data);
+
+            Navigator.pushReplacementNamed(context, AppRoute.home);
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(showMessage(false, 'Invalid form input!'));
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppTheme.whiteColor,
@@ -111,7 +158,10 @@ class LoginScreen extends StatelessWidget {
                   height: 32,
                 ),
                 authProvider.status == AuthenticationStatus.authenticating
-                    ? const ButtonLoading(title: "Login")
+                    ? ButtonLoading(
+                        title: "Login",
+                        function: () {},
+                      )
                     : submitButton("Login", () => login(context)),
                 const SizedBox(
                   height: 24,
@@ -128,12 +178,17 @@ class LoginScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoute.register);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => RegistrationScreen()),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(
-                            color: AppTheme.primaryColor,
+                            color: AppTheme.secondaryColor,
                             fontSize: 18,
                             fontWeight: FontWeight.normal),
                       ),
@@ -146,47 +201,5 @@ class LoginScreen extends StatelessWidget {
         ),
       )),
     );
-  }
-
-  void login(BuildContext context) async {
-    final form = _formkey.currentState;
-
-    if (form!.validate()) {
-      form.save();
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(showMessage(true, "Please wait authenticating ..."));
-
-      // Update authentication status
-      AuthenticationProvider.instance
-          .authenticationChanged(AuthenticationStatus.authenticating);
-
-      final res = await UserService().login(data: {
-        "email": _emailController.text,
-        "password": _passwordController.text
-      });
-      res.when(
-        error: (error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            showMessage(false, error.message),
-          );
-        },
-        success: (data) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            showMessage(true, "Login Success"),
-          );
-
-          AuthenticationProvider.instance.loginUser(
-            user: data,
-            authToken: data.token,
-          );
-
-          Navigator.pushReplacementNamed(context, AppRoute.home);
-        },
-      );
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(showMessage(false, 'Invalid form input!'));
-    }
   }
 }

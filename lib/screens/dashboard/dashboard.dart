@@ -24,8 +24,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     var greetings = greetingMessage();
 
     // Load user
-    // var rider = context.watch<RiderProvider>().rider;
-    var rider = RiderProvider.instance.rider;
+    var rider = context.watch<RiderProvider>().rider;
+    // var rider = RiderProvider.instance.rider;
 
     if (kDebugMode) {
       print(rider.brand);
